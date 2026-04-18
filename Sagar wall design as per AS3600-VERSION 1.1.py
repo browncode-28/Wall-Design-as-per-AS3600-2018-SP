@@ -2,6 +2,7 @@
 import math
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def get_number(dimension_of_wall):
@@ -153,20 +154,8 @@ final_eccentricity_e_mm = final_eccentricity_e_m * 1000  # convert final eccentr
 print(f"The final eccentricity 'e' is: {final_eccentricity_e_mm: 0.2f} mm")
 accidental_eccentricity_ea_mm = (height_mm ** 2 / (2500 * thickness_mm))
 print(f"The accidental eccentricity 'ea' is: {accidental_eccentricity_ea_mm: 0.2f} mm")
-
-print("There are some limitations on the method used in this section, as provided in Clause 11.5.3:")
-print(
-    "The design axial stress in the member must be less than 3 MPa\n"
-    "unless vertical and horizontal reinforcements are provided on both wall faces\n"
-    "such that the stress is divided equally between them")
-print(
-    "Ratio of effective height (Hw) and thickness (Tw) of the wall must be less than 20 if singly reinforced\n"
-    "less than 30 if doubly reinforced\n(i.e. if there are more reinforcements, the wall may be taller")
-print(
-    "The wall cannot be constructed on soils with soil classification Dc or Ec, as defined in AS 1170.4"
-    "\nnot to use in a building which may be subject to seismic loads")
-
 N_kN = float(input("Please enter Axial load N* kN/m to check against phiNu: "))
+V_kN = float(input("Please enter In plane Shear load V* kN/m to check against phiVu: "))
 
 
 # let's add function for calculation of axial capacity----------------------------------------------------------
@@ -485,36 +474,67 @@ for (spacing, bar), area in suggestion_for_user.items():
 # items() is command that tells python to give us a key:value like what we have in a normal dictionary
 # in our example index is (spacing,dia) then you unpack both of them
 
+
 # let's add the above input to a dictionary so, I can loop them through my dictionary
-print("\nBelow are the inputs you have added for the wall script in a summary: ")
+print("\nBelow are the input of the wall that you have provided: ")
 
-input_summary = {"wall height (m)": height_m,
-                 "wall length (m)": length_m,
-                 "wall thickness (m)": thickness_m,
-                 "concrete grade f'c (MPa)": fc_prime,
-                 "Floor type above wall": floor_condition,
-                 "Buckling type": buckling_of_wall,
-                 "Axial load (kN/m)": N_kN,
-                 "eccentricity(mm)": final_eccentricity_e_mm,
-                 "accidental eccentricity(mm)": accidental_eccentricity_ea_mm,
+input_summary = {"wall height (m)": f"{height_m} m",
+                 "wall length (m)": f"{length_m} m",
+                 "wall thickness (m)": f"{thickness_m} m",
+                 "concrete grade f'c (MPa)": f"{fc_prime} MPa",
+                 "Floor type above wall": f"{floor_condition}, 1:continuous,2:discontinuous,3:number of floors above",
+                 "Buckling type": f"{buckling_of_wall} bucking of wall",
+                 "Axial load (kN/m)": f"{N_kN} kN/m",
+                 "eccentricity(mm)": f"{final_eccentricity_e_mm} mm",
+                 "accidental eccentricity(mm)": f"{accidental_eccentricity_ea_mm} mm",
                  }
-result_summary = {"Axial capacity phi Nu (kN/m)": axial_load_calculation,
-                  "Axial stress (MPa)": axial_stress_MPa,
-                  "Max shear force Vu max (kN)": vu_max_kN,
-                  "shear force Vuc due to concrete (kN)": v_final_concrete_kN,
-                  "phi Vuc shear force due to concrete (kN)": phi_v_final_concrete_kN,
-                  "phi Vus shear force due to steel (kN)": phiVus,
-                  "Design strength of wall in plan shear phiVu (kN)": phiVu_kN,
-                  "Diameter of reo in vertical direction (mm)": final_name_vertical,
-                  "Diameter of reo in horizontal direction (mm)": final_name_horizontal,
-                  "Spacing of reo in vertical direction (mm)": final_spacing_vert,
-                  "Spacing of reo in horizontal direction (mm)": final_spacing_horizontal,
-                  "Reinforcement ratio in vertical direction (pw)": pw_vertical_direction_final,
-                  "Reinforcement ratio in horizontal direction (pw)": pw_horizontal_direction_final,
-                  }
-for labels, values in input_summary.items():
-    print(f"{labels.ljust(40)}: {values}")
 
-print("\nbelow are the results for the wall based on the input: ")
-for results, answers in result_summary.items():
-    print(f"{results.ljust(50)}: {answers:0.4f}")
+for labels, values in input_summary.items():
+    print(f"{labels.ljust(50)}: {values}")
+
+print("\n------------------------------------------------------------------------------------------")
+
+print("\nResults based on the input are as follows: ")
+result_summary = {"Axial capacity phi Nu (kN/m)": f"{axial_load_calculation:0.2f} kN/m",
+                  "Axial stress (MPa)": f"{axial_stress_MPa:0.2f} MPa",
+                  "Max shear force Vu max (kN)": f"{vu_max_kN:0.2f} kN",
+                  "shear force Vuc due to concrete (kN)": f"{v_final_concrete_kN:0.2f} kN",
+                  "phi Vuc shear force due to concrete (kN)": f"{phi_v_final_concrete_kN:0.2f} kN",
+                  "phi Vus shear force due to steel (kN)": f"{phiVus:0.2f} kN",
+                  "Design strength of wall in plane shear phiVu (kN)": f"{phiVu_kN:0.2f} kN",
+                  "Diameter of reo in vertical direction (mm)": f"{final_name_vertical} mm bar",
+                  "Diameter of reo in horizontal direction (mm)": f"{final_name_horizontal} mm bar",
+                  "Spacing of reo in vertical direction (mm)": f"{final_spacing_vert:0.2f} mm",
+                  "Spacing of reo in horizontal direction (mm)": f"{final_spacing_horizontal:0.2f} mm",
+                  "Reinforcement ratio in vertical direction (pw)": f"{pw_vertical_direction_final:0.4f}",
+                  "Reinforcement ratio in horizontal direction (pw)": f"{pw_horizontal_direction_final:0.4f}",
+                  }
+
+for labels, values in result_summary.items():
+    print(f"{labels.ljust(50)}: {values}")
+print("\n------------------------------------------------------------------------------------------")
+print("Utilisation ratio of the wall is as follows:")
+Axial_utilisation_of_wall = N_kN / axial_load_calculation
+print(f"Axial load utilisation is {Axial_utilisation_of_wall:0.3f}, less that 1.0 is safe!!!!")
+shear_utilisation_of_wall = V_kN / phiVu_kN
+print(f"shear load utilisation is {shear_utilisation_of_wall:0.3f}, less than 1.0 is safe!!!")
+print("\n------------------------------------------------------------------------------------------")
+
+print("There are some limitations on the method used in this section, as provided in Clause 11.5.3:")
+print(
+    "The design axial stress in the member must be less than 3 MPa\n"
+    "unless vertical and horizontal reinforcements are provided on both wall faces\n"
+    "such that the stress is divided equally between them")
+print(
+    "Ratio of effective height (Hw) and thickness (Tw) of the wall must be less than 20 if singly reinforced\n"
+    "less than 30 if doubly reinforced\n(i.e. if there are more reinforcements, the wall may be taller")
+print(
+    "The wall cannot be constructed on soils with soil classification Dc or Ec, as defined in AS 1170.4"
+    "\nnot to use in a building which may be subject to seismic loads")
+labels = ["Axial_utilisation_of_wall", "shear_load_utilisation_of_wall"]  # x-axis
+values = [Axial_utilisation_of_wall, shear_utilisation_of_wall]  # x-axis
+fig, ax = plt.subplots()
+ax.bar(labels, values)
+ax.set_title("utilisation_of_wall")
+ax.set_ylabel("utilisation")
+plt.show()
